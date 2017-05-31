@@ -85,6 +85,7 @@ const crash = (msg) => {
       Readme.fromFileAsync(mainReadmePath),
       new Promise((resolve) => {
         if (!program.dry) {
+          console.log('Writing notes to', newFilename);
           resolve(fs.writeFileAsync(newFilename, paper.toNotes()))
         } else {
           console.log(`>>> Writing notes to file ${newFilename}`);
@@ -98,6 +99,7 @@ const crash = (msg) => {
   }).spread((paper, readme) => {
     readme.addPaper(paper, program.category)
     if (!program.dry) {
+      console.log('Adding README entry');
       return fs.writeFileAsync(mainReadmePath, readme.toMarkdown())
     } else {
       console.log(`>>> Writing to README.md`);
