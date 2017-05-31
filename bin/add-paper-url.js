@@ -85,7 +85,7 @@ const crash = (msg) => {
       Readme.fromFileAsync(mainReadmePath),
       new Promise((resolve) => {
         if (!program.dry) {
-          return fs.writeFileAsync(newFilename, paper.toNotes())
+          resolve(fs.writeFileAsync(newFilename, paper.toNotes()))
         } else {
           console.log(`>>> Writing notes to file ${newFilename}`);
           console.log('----------------------------------------');
