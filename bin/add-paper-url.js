@@ -77,34 +77,16 @@ const crash = (msg) => {
       scraper.scrapeURL(url),
       mkdirp(categoryPath)
     ])
-  }).spread((result) => {
-    let cleanPaperTitle = result.title.match(/[a-zA-Z0-9]+/g).join('_')
-    let year = result.dateRaw.split('/')[0]
-    let firstAuthor = result.authors[0].match(/[a-zA-Z]+/g)[0]
-    let paperFilename = [year, firstAuthor, cleanPaperTitle].join('-') + '.md'
-    paperFilename = paperFilename.toLowerCase()
-
-    result.filename = paperFilename;
-
-    console.log(paperFilename);
-    let fileContents = [
-      '# ' + result.title,
-      '',
-      url,
-      '',
-      '## Notes'
-    ].join('\n')
-
-    console.log(util.inspect(result, null, 10));
-    let newFilename = path.join(categoryPath, paperFilename)
+  }).spread((paper) => {
+    let newFilename = path.join(categoryPath, paper.filename)
 
     return Promise.all([
-      result,
+      paper,
       Readme.fromFileAsync(mainReadmePath),
-      fs.writeFileAsync(newFilename, fileContents),
+      fs.writeFileAsync(newFilename, paper.toNotes()),
     ])
-  }).spread((result, readme) => {
-    readme.addPaper(result, program.category)
+  }).spread((paper, readme) => {
+    readme.addPaper(paper, program.category)
     if (!program.dry) {
       return fs.writeFileAsync(mainReadmePath, readme.toMarkdown())
     } else {
