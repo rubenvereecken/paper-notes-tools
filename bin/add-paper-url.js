@@ -49,8 +49,9 @@ const crash = (msg) => {
   if (!program.notes) program.notes = '.'
   // console.log(program);
   if (program.category === true) {
-    console.log('No category supplied. If you just want to use the default category,');
-    console.log('run again with `--no-category`');
+    console.log('No category supplied');
+    console.log('supply a category using --category <cat>');
+    console.log('or run again with `--no-category`');
     process.exit(1)
   }
   if (program.category === false) {
