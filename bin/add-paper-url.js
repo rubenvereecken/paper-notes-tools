@@ -83,14 +83,27 @@ const crash = (msg) => {
     return Promise.all([
       paper,
       Readme.fromFileAsync(mainReadmePath),
-      fs.writeFileAsync(newFilename, paper.toNotes()),
+      new Promise((resolve) => {
+        if (!program.dry) {
+          return fs.writeFileAsync(newFilename, paper.toNotes())
+        } else {
+          console.log(`>>> Writing notes to file ${newFilename}`);
+          console.log('----------------------------------------');
+          console.log(paper.toNotes());
+          console.log('----------------------------------------\n');
+          resolve()
+        }
+      })
     ])
   }).spread((paper, readme) => {
     readme.addPaper(paper, program.category)
     if (!program.dry) {
       return fs.writeFileAsync(mainReadmePath, readme.toMarkdown())
     } else {
+      console.log(`>>> Writing to README.md`);
+      console.log('----------------------------------------');
       console.log(readme.toMarkdown());
+      console.log('----------------------------------------');
     }
 
   }).catch((err) => {
